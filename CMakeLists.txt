@@ -11,6 +11,7 @@ project(ble_lesson1_excercise1)
 # NORDIC SDK APP START
 target_sources(app PRIVATE
   src/main.c
+  src/icm_20948.c
 )
 
 # NORDIC SDK APP END

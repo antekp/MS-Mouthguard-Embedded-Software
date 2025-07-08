@@ -26,7 +26,7 @@ void icm_20948_init(const struct i2c_dt_spec dev_i2c)
 	select_register_bank(dev_i2c, _b0);
 }
 
-void icm_20948_read_data(const struct i2c_dt_spec dev_i2c, icm_20948_data* data)
+void icm_20948_read_data(const struct i2c_dt_spec dev_i2c, sensor_data_t *data)
 {
 	uint8_t data_rx[12];
 

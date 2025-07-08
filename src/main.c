@@ -55,6 +55,8 @@ static const struct i2c_dt_spec dev_i2c = I2C_DT_SPEC_GET(I2C_NODE);
 
 icm_20948_data imu_data;
 
+K_FIFO_DEFINE(sensor_fifo);
+
 //Callback for subscription following
 static void ccc_cfg_changed(const struct bt_gatt_attr *attr, uint16_t value)
 {
@@ -179,29 +181,42 @@ static struct bt_conn_auth_info_cb conn_auth_info_callbacks = {
 
 
 //Thread for sensor data notification
-void sensor_notify_thread(void)
+void imu_reader_thread(void)
 {
 	while (1) {
+		sensor_data_t *entry = k_malloc(sizeof(sensor_data_t));
+		if (!entry) continue;
+
+		icm_20948_read_data(dev_i2c, (icm_20948_data *)entry);
+
+		entry->x_accel = imu_data.x_accel;
+		entry->y_accel = imu_data.y_accel;
+		entry->z_accel = imu_data.z_accel;
+		entry->x_gyro  = imu_data.x_gyro;
+		entry->y_gyro  = imu_data.y_gyro;
+		entry->z_gyro  = imu_data.z_gyro;
+
+		k_fifo_put(&sensor_fifo, entry);
+		k_msleep(50); 
+	}
+}
+//Thread for data transmition over BLE
+void ble_sender_thread(void)
+{
+	while (1) {
+		sensor_data_t *entry = k_fifo_get(&sensor_fifo, K_FOREVER);
+
 		if (notify_conn && notify_enabled) {
-			icm_20948_read_data(dev_i2c, &imu_data);
-
-			int16_t sensor_data_buffer[6] = {
-				imu_data.x_accel,
-				imu_data.y_accel,
-				imu_data.z_accel,
-				imu_data.x_gyro,
-				imu_data.y_gyro,
-				imu_data.z_gyro,
-			};
-
-			bt_gatt_notify(notify_conn, &custom_svc.attrs[1], &sensor_data_buffer, sizeof(sensor_data_buffer));
+			bt_gatt_notify(notify_conn, &custom_svc.attrs[1],
+			               entry, sizeof(sensor_data_t));
 		}
 
-		k_sleep(K_SECONDS(1));
+		k_free(entry);
 	}
 }
 
-K_THREAD_DEFINE(sensor_thread_id, 1024, sensor_notify_thread, NULL, NULL, NULL, 7, 0, 0);
+K_THREAD_DEFINE(imu_thread_id, 1024, imu_reader_thread, NULL, NULL, NULL, 5, 0, 0);
+K_THREAD_DEFINE(ble_thread_id, 1024, ble_sender_thread, NULL, NULL, NULL, 5, 0, 0);
 
 
 int main(void)

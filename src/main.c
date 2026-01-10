@@ -30,7 +30,7 @@ icm_20948_data imu_data;
 
 int main(void)
 {
-	int err;
+	
 	
 	if (!device_is_ready(dev_i2c.bus)) {
 	printk("I2C bus %s is not ready!\n\r",dev_i2c.bus->name);
@@ -52,6 +52,9 @@ int main(void)
 
 
 	for (;;) {
-		k_sleep(K_FOREVER);
+
+		icm_20948_read_data(dev_i2c,&imu_data);
+
+		k_msleep(SLEEP_TIME_MS);
 	}
 }

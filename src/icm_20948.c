@@ -69,3 +69,22 @@ void select_register_bank(const struct i2c_dt_spec dev_i2c, user_bank_select ban
 		printk("Failed to write to register 0x%02X\r\n", REG_BANK_SEL);
 	}
 }
+int8_t i2c_bus_start_check(const struct i2c_dt_spec *dev_i2c, uint8_t regs[], uint8_t id)
+{
+	if (!device_is_ready(dev_i2c->bus)) {
+	printk("I2C bus %s is not ready!\n\r",dev_i2c->bus->name);
+	return -1;
+	}
+	int ret = i2c_write_read_dt(dev_i2c, regs, 1, &id, 1);
+
+	if(ret != 0) {
+		printk("Failed to read register %x \n", regs[0]);
+		return -1;
+	}
+
+	if (id != CHIP_ID) {
+		printk("Invalid chip id! 0x%02X \n", id);
+		return -1;
+	}
+	return 0;
+}

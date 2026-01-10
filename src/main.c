@@ -25,7 +25,7 @@ static const struct i2c_dt_spec dev_i2c = I2C_DT_SPEC_GET(I2C_NODE);
 static const struct device *uart = DEVICE_DT_GET(DT_NODELABEL(uart0));
 
 const struct uart_config uart_cfg = {
-		.baudrate = 115200,
+		.baudrate = 9600,
 		.parity = UART_CFG_PARITY_NONE,
 		.stop_bits = UART_CFG_STOP_BITS_1,
 		.data_bits = UART_CFG_DATA_BITS_8,
@@ -35,7 +35,7 @@ const struct uart_config uart_cfg = {
 
 icm_20948_data imu_data;
 
-uint8_t tx_buffer[8] = {1,2,3,4,5,6,7,8};
+uint8_t tx_buffer = 0xF0;
 
 
 int main(void)
@@ -58,7 +58,7 @@ int main(void)
 
 	for (;;) {
 
-		uart_tx(uart, tx_buffer, sizeof(tx_buffer), 1000);
+		uart_tx(uart, &tx_buffer, 1, 1000);
 		//icm_20948_read_data(dev_i2c,&imu_data);
 
 

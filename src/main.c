@@ -15,6 +15,8 @@
 #include "icm_20948.h"
 #include "ds18b20_1wire.h"
 #include <zephyr/drivers/uart.h>
+#include <zephyr/drivers/adc.h>
+#include "tds_sensor_adc.h"
 
 //Private defines section
 #define SLEEP_TIME_MS 1000
@@ -23,9 +25,15 @@
 //DeviceTree variables section
 static const struct i2c_dt_spec dev_i2c = I2C_DT_SPEC_GET(I2C_NODE);
 static const struct device *uart = DEVICE_DT_GET(DT_NODELABEL(uart0));
+static const struct adc_dt_spec adc_channel = ADC_DT_SPEC_GET(DT_PATH(zephyr_user));
 
 //Data variables section
 icm_20948_data imu_data;
+int16_t adc_buffer;
+struct adc_sequence sequence = {
+	.buffer = &adc_buffer,
+	.buffer_size = sizeof(adc_buffer)
+};
 
 int main(void)
 {
@@ -40,8 +48,6 @@ int main(void)
 	icm_20948_init(dev_i2c);
 	
 	for (;;) {
-
-	
 
 		k_msleep(SLEEP_TIME_MS);
 	}

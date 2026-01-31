@@ -16,19 +16,19 @@
 #include "ds18b20_1wire.h"
 #include <zephyr/drivers/uart.h>
 
-
+//Private defines section
 #define SLEEP_TIME_MS 1000
 #define I2C_NODE DT_NODELABEL(mysensor)
 
-
+//DeviceTree variables section
 static const struct i2c_dt_spec dev_i2c = I2C_DT_SPEC_GET(I2C_NODE);
 static const struct device *uart = DEVICE_DT_GET(DT_NODELABEL(uart0));
 
+//Data variables section
 icm_20948_data imu_data;
 
 int main(void)
 {
-	
 	
 	i2c_bus_start_check(&dev_i2c);
 
@@ -37,7 +37,6 @@ int main(void)
 		printk("UART: %c not ready", (int)uart->name);
 		return -1;
 	}
-
 	icm_20948_init(dev_i2c);
 	
 	for (;;) {

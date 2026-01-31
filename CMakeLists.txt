@@ -13,6 +13,7 @@ target_sources(app PRIVATE
   src/main.c
   src/icm_20948.c
   src/ds18b20_1wire.c
+  src/tds_sensor_adc.c
 )
 
 # NORDIC SDK APP END

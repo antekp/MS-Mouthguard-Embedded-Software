@@ -3,6 +3,8 @@
 
 
 
+uint8_t id = 0;
+uint8_t regs[] = {WHO_AM_I_REGISTER};
 
 void icm_20948_init(const struct i2c_dt_spec dev_i2c)
 {
@@ -69,7 +71,7 @@ void select_register_bank(const struct i2c_dt_spec dev_i2c, user_bank_select ban
 		printk("Failed to write to register 0x%02X\r\n", REG_BANK_SEL);
 	}
 }
-int8_t i2c_bus_start_check(const struct i2c_dt_spec *dev_i2c, uint8_t regs[], uint8_t id)
+int8_t i2c_bus_start_check(const struct i2c_dt_spec *dev_i2c)
 {
 	if (!device_is_ready(dev_i2c->bus)) {
 	printk("I2C bus %s is not ready!\n\r",dev_i2c->bus->name);

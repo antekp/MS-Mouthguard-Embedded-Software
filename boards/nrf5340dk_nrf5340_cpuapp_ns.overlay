@@ -50,3 +50,9 @@
 	pinctrl-1 = <&uart1_default>;
 	pinctrl-names = "default", "sleep";
 };
+
+/{
+	zephyr,user {
+        ds18b20-gpios = <&gpio0 25 (GPIO_OPEN_DRAIN | GPIO_ACTIVE_HIGH)>;
+    };
+};

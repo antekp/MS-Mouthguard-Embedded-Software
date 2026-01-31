@@ -40,4 +40,4 @@ void icm_20948_init(const struct i2c_dt_spec dev_i2c);
 void select_register_bank(const struct i2c_dt_spec dev_i2c, user_bank_select bank_register_number);
 void icm_20948_i2c_write_reg(user_bank_select bank_number, const struct i2c_dt_spec dev_i2c, uint8_t register, uint8_t data);
 void icm_20948_read_data(const struct i2c_dt_spec dev_i2c, icm_20948_data *data);
-int8_t i2c_bus_start_check(const struct i2c_dt_spec *dev_i2c, uint8_t regs[], uint8_t id);
+int8_t i2c_bus_start_check(const struct i2c_dt_spec *dev_i2c);

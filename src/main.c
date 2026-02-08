@@ -40,13 +40,13 @@ int main(void)
 	
 	i2c_bus_start_check(&dev_i2c);
 
-	if (!device_is_ready(uart))
-	{
-		printk("UART: %c not ready", (int)uart->name);
-		return -1;
-	}
+	// if (!device_is_ready(uart))
+	// {
+	// 	printk("UART: %c not ready", (int)uart->name);
+	// 	return -1;
+	// }
 	icm_20948_init(dev_i2c);
-	
+
 	for (;;) {
 
 		k_msleep(SLEEP_TIME_MS);

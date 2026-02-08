@@ -22,9 +22,18 @@ void StartingADC(const struct adc_dt_spec *adc_channel, struct adc_sequence *seq
 
 void PrintRawAndMilivoltsADCValue(const struct adc_dt_spec *adc_channel, struct adc_sequence *sequence)
 {
-    int val_mv = (int)(*sequence).buffer; 
-    ReadADCValue(adc_channel, sequence);
-    printk("ADC Reading: channel[%d] raw: %d\r\n", adc_channel->channel_id, val_mv);
+    int32_t val_raw; 
+    int32_t val_mv;
+
+    if (ReadADCValue(adc_channel, sequence) != 0) {
+        return;
+    }
+
+    val_raw = *(int16_t *)sequence->buffer;
+
+    printk("ADC Reading: channel[%d] raw: %d\r\n", adc_channel->channel_id, val_raw);
+
+    val_mv = val_raw;
 
     if(ADCRawToMilivolts(adc_channel, &val_mv) != 0)
     {

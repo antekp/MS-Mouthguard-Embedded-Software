@@ -24,7 +24,6 @@
 
 //DeviceTree variables section
 static const struct i2c_dt_spec dev_i2c = I2C_DT_SPEC_GET(I2C_NODE);
-static const struct device *uart = DEVICE_DT_GET(DT_NODELABEL(uart0));
 static const struct adc_dt_spec adc_channel = ADC_DT_SPEC_GET(DT_PATH(zephyr_user));
 
 //Data variables section
@@ -47,8 +46,12 @@ int main(void)
 	// }
 	icm_20948_init(dev_i2c);
 
+	StartingADC(&adc_channel, &sequence);
+
 	for (;;) {
 
+		PrintRawAndMilivoltsADCValue(&adc_channel, &sequence);
+		printk("Ready...\n\r");
 		k_msleep(SLEEP_TIME_MS);
 	}
 }
